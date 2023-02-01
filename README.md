@@ -4,7 +4,7 @@ ERC20 Token Transfer using zkEVM Bridge from L1 to L2 and L2 to L1
 English: 
 
 /1/
-Step 1: Deploy the <ERC20> contract and run the "mint" function. (example: 10000000000000000000000 wei = 1,000,000 tokens)
+Step 1: Deploy the "ERC20" contract and run the "mint" function. (example: 10000000000000000000000 wei = 1,000,000 tokens)
 Constructor parameters
 _name: ERC20 token name (example = CarbonToken)
 _symbol: ERC20 token symbol (example = CARBON)
