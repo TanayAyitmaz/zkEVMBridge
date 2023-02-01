@@ -32,3 +32,7 @@ Step 6: To transfer tokens from **Goerli** to **zkEVM**, run the *sendToL2* func
     @param3 _deadline: Final processing time *(min _deadline value = block.timestamp + 7 days)*<br/>
     @param4 amount: Number of Tokens to be sent that have been previously Approve<br/>
 
+Transaction example list on testnet:Test : <br/>
+**Goerli** = https://goerli.etherscan.io/tx/0xbec7af98b38368743b70aff64a903ec3ee32719958fc75caed1cf2b26be60827<br/>
+**zkEVM**  = https://explorer.goerli.zkevm.consensys.net/tx/0xf2de33a1b4dc6f94c03fd6cbf66b53d1f2cea9b4ca1e76429f0a1c33b985ad8e
+
