@@ -36,3 +36,34 @@ Transaction example list on testnet:Test : <br/>
 **Goerli** = https://goerli.etherscan.io/tx/0xbec7af98b38368743b70aff64a903ec3ee32719958fc75caed1cf2b26be60827<br/>
 **zkEVM**  = https://explorer.goerli.zkevm.consensys.net/tx/0xf2de33a1b4dc6f94c03fd6cbf66b53d1f2cea9b4ca1e76429f0a1c33b985ad8e
 
+
+**Türkçe:**
+
+Adım 1: **ERC20** sözleşmesini Deploy edin. Sonrasında "mint" fonksiyonunu çalıştırın. *(örnek: 10000000000000000000000 wei = 1,000,000 token)*<br/>
+    **Constructor parametereleri;**<br/>
+    _name: ERC20 token adı *(örnek = CarbonToken)*<br/>
+    _symbol: ERC20 token sembol *(örnek = CARBON)*<br/>
+
+Adım 2: **CarbonWrapper** sözleşmesini deploy edin. <br/>
+    **Constructor parametereleri;**<br/>
+    _token: ERC20 sözleşme adresi *(adım 1'de deploy ettiğimiz sözleşme)*<br/>
+    _l1Bridge: Goerli L1 Bridge adresi (0xE87d317eB8dcc9afE24d9f63D6C760e52Bc18A40)<br/>
+
+Adım 1 ve Adım 2 'deki işlemler **Goerli testnet** üzerinde yapılacaktır.
+
+Adım 3: **WrappedCarbon** sözleşmesini **zkEVM testnet** üzerinde deploy edin.<br/>
+    **Constructor parametereleri;**<br/>
+    _l2Bridge : ZkEVM L2 Bridge adresi (0xA59477f7742Ba7d51bb1E487a8540aB339d6801d)<br/>
+    _name : ERC20 Token adı *(örnek = wCarbonToken)*<br/>
+    _symbol: ERC20 Token symbol *(örnek = wCARBON)*<br/>
+**WrappedCarbon** sözleşmesinde "setCarbonWrapper" fonksiyonuna **carbonWrapper** *(Adım 2 sözleşme adresi)* sözleşme adresini tanımlayın.
+
+Adım 4: **CarbonWrapper** sözleşmesinde *setL2TokenPair* fonksiyonuna **WrappedCarbon**  *(Adım 3)* sözleşme adresini tanımlayın. *(Goerli üzerinde)*
+
+Adım 5: **ERC20** token sözleşmesi **CarbonWrapper** sözleşme adresi için "Approve" verin *(örnek: 10000000000000000000000 wei = 10,000 token)*
+
+Adım 6: **Goerli** 'den **zkEVM** 'e transfer gerçekleştirmek için **CarbonWrapper** sözleşmesinde *sendToL2* fonksiyonunu çalıştırın.<br/>
+    @parametre1 recipient: L2 üzerindeki alıcı adresi *(kullandığınız wallet adresi olabilir)*<br/>
+    @parametre2 _fee: Köprü için Fee değeri *(0.01 ETH - minimum _fee değeri = 10000000000000000 wei)*<br/>
+    @parametre3 _deadline: Son işlem süresi *(minimum _deadline değeri = block.timestamp + 7 days)*<br/>
+    @parametre4 amount: Daha önce Approve verdiğiniz token miktarı<br/>
