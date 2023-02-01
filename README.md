@@ -26,7 +26,7 @@ Step 4: The contract address of the **WrappedCarbon**  *(in step 3)* is defined 
 
 Step 5: Approve is given from the **ERC20** token contract to the **CarbonWrapper** contract. *(example: 10000000000000000000000 wei = 10,000 tokens)*
 
-Step 6: To transfer tokens from "Goerli" to "zkEVM", run the "sendToL2" function in the "CarbonWrapper" contract.<br/>
+Step 6: To transfer tokens from **Goerli** to **zkEVM**, run the *sendToL2* function in the **CarbonWrapper** contract.<br/>
     @param1 recipient: Recipient wallet address on L2 *(same wallet address)*<br/>
     @param2 _fee: Fee required for the bridge *(0.01 ETH - min _fee value = 10000000000000000 wei)*<br/>
     @param3 _deadline: Final processing time *(min _deadline value = block.timestamp + 7 days)*<br/>
