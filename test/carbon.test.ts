@@ -34,7 +34,7 @@ describe("ERC20 Contract Test", function() {
         console.log("\tUser Address: ", user.address,"\n")
     })
 
-    // Deploy ERC20
+    // Deploy ERC20 (on Ethereum Goerli testnet)
     it("Deploy ERC20 Contract", async function () {
         erc20Factory = await ethers.getContractFactory("ERC20")
         erc20Contract = await erc20Factory.deploy("CarbonToken", "CARBON")
@@ -79,7 +79,7 @@ describe("ERC20 Contract Test", function() {
     })
 
 
-    // Deploy CarbonWrapper
+    // Deploy CarbonWrapper (on Ethereum Goerli testnet)
     it("Deploy Wrapper Contract", async function () {
         wrapperFactory = await ethers.getContractFactory("CarbonWrapper")
         wrapperContract = await wrapperFactory.deploy(erc20Contract.address, "0xE87d317eB8dcc9afE24d9f63D6C760e52Bc18A40")
@@ -92,7 +92,7 @@ describe("ERC20 Contract Test", function() {
     })
 
 
-    // Deploy WrappedCarbon
+    // Deploy WrappedCarbon (on zkEVN testnet)
     it("Deploy Wrapped Contract", async function () {
         wrappedFactory = await ethers.getContractFactory("WrappedCarbon")
         wrappedContract = await wrappedFactory.deploy("0xA59477f7742Ba7d51bb1E487a8540aB339d6801d", "wCarbonToken", "wCARBON")
@@ -115,6 +115,42 @@ describe("ERC20 Contract Test", function() {
         console.log("\tWrapped Token Decimals: ", tx)
         tx = await wrappedContract.totalSupply()
         console.log("\tWrapped Token Total Supply: ", addComma(formatEther(tx)),"\n")
+    })
+
+    // setCarbonWrapper (on zkEVM testnet)
+    it("setCarbonWrapper", async function () {
+        async function setCarbonWrapper(address:any) {
+            try {
+                tx = await wrappedContract.setCarbonWrapper(address)
+                receipt = await tx.wait()
+                if (receipt.status) {
+                console.log("\tWrapped Carbon Gas: ",strDisplay(receipt.gasUsed))
+                console.log("\tWrapped Carbon Address Set Done...\n")
+                totalGas = totalGas.add(receipt.gasUsed)
+                }
+            } catch (error) {
+                console.log(error)
+            }  
+        }
+        await setCarbonWrapper(wrapperContract.address)
+    })
+
+    // setL2TokenPair (on Ethereum Goerli testnet)
+    it("setL2TokenPair", async function () {
+        async function setL2TokenPair(address:any) {
+            try {
+                tx = await wrapperContract.setL2TokenPair(address)
+                receipt = await tx.wait()
+                if (receipt.status) {
+                console.log("\tCarbon Wrapper Gas: ",strDisplay(receipt.gasUsed))
+                console.log("\tCarbon Wrapper Address Done...\n")
+                totalGas = totalGas.add(receipt.gasUsed)
+                }
+            } catch (error) {
+                console.log(error)
+            }  
+        }
+        await setL2TokenPair(wrappedContract.address)
     })
 
 })
