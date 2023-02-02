@@ -153,4 +153,62 @@ describe("ERC20 Contract Test", function() {
         await setL2TokenPair(wrappedContract.address)
     })
 
+    // Approve ERC20 (on Ethereum Goerli testnet)
+    it("Approve ERC20", async function () {
+        async function approveERC20(address:any, amount:any) {
+            try {
+                tx = await erc20Contract.approve(address, amount)
+                receipt = await tx.wait()
+                if (receipt.status) {
+                console.log("\tApprove Gas: ",strDisplay(receipt.gasUsed))
+                console.log("\tApprove Done...\n")
+                totalGas = totalGas.add(receipt.gasUsed)
+                }
+            } catch (error) {
+                console.log(error)
+            }  
+        }
+        const approveAmount = ethers.BigNumber.from("10000000000000000000000"); //10.000 tokens
+        await approveERC20(wrapperContract.address, approveAmount)
+    })
+
+    // sendToL2 (on Ethereum Goerli testnet)
+    it("Send To L2 Wrap Token", async function () {
+        async function sendToL2(address:any, fee:any, deadline:any, amount:any) {
+            try {
+                let _value = {value: ethers.utils.parseEther("0.01")}
+                tx = await wrapperContract.sendToL2(address, fee, deadline, amount, _value)
+                receipt = await tx.wait()
+                if (receipt.status) {
+                console.log("\tSend To L2 Gas: ",strDisplay(receipt.gasUsed))
+                console.log("\tSend To L2 Transfer Done...\n")
+                totalGas = totalGas.add(receipt.gasUsed)
+                }
+            } catch (error) {
+                console.log(error)
+            }  
+        }
+        // Current Time
+        const blockNumBefore = await ethers.provider.getBlockNumber()
+        const blockBefore = await ethers.provider.getBlock(blockNumBefore)
+        const timestampBefore = blockBefore.timestamp
+        const currentDate = new Date(timestampBefore * 1000)
+        console.log("\tCurrent Time : ",timestampBefore," - ",currentDate.toLocaleDateString("en-US"))
+        // Time Operations
+        const time = moment().utc().unix() + 604800
+        await ethers.provider.send("evm_setNextBlockTimestamp", [time])
+        await ethers.provider.send("evm_mine", [time]);
+        // Next Time
+        const blockNumAfter = await ethers.provider.getBlockNumber() 
+        const blockAfter = await ethers.provider.getBlock(blockNumAfter) 
+        const timestampAfter = blockAfter.timestamp 
+        const NextDate = new Date(timestampAfter * 1000);
+        console.log("\tSkipped Time : ",timestampAfter," - ",NextDate.toLocaleDateString("en-US"),"\n")
+        
+        const _fee = ethers.BigNumber.from("10000000000000000"); // 0.01 ETH
+        const _deadline = timestampAfter
+        const _amount = ethers.BigNumber.from("10000000000000000000000"); //10.000 tokens
+        await sendToL2(owner.address, _fee, _deadline, _amount)
+    })
+
 })
